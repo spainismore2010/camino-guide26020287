@@ -63,6 +63,37 @@ a{color:#2a7a3b;text-decoration:none}a:hover{text-decoration:underline}
 .hidden{display:none!important}
 button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer;}
 .day-nav{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+.card[onclick] {
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: inherit;
+  background: white;
+  border: 1px solid #e8e8e4;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+  display: block;
+}
+.card[onclick]:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+.card[onclick]:active {
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+#s-guide .card[style*="cursor:pointer"]:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+  transition: all 0.15s;
+}
+#s-guide .card[style*="cursor:pointer"]:active {
+  transform: scale(0.98);
+}
 </style>
 <script>/* @preserve
  * Leaflet 1.9.4, a JS library for interactive maps. https://leafletjs.com
@@ -100,10 +131,10 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:
 <div class="prose da"><p>6 faner øverst. Hvert vandredag har 3 sub-faner: <strong>Info</strong> (hotel + Google Maps), <strong>Mapa</strong> (rute + højdeprofil) og <strong>By & etape</strong> (cómo llegar + byinfo). Skift sprog med knappen øverst til højre.</p></div>
 <div class="prose es hidden"><p>6 pestañas arriba. Cada día de marcha tiene 3 sub-pestañas: <strong>Info</strong> (hotel + Google Maps), <strong>Mapa</strong> (ruta + perfil) y <strong>By & etape</strong> (cómo llegar + info ciudad). Cambia idioma con el botón de arriba.</p></div></div>
 <div class="two-col">
-<div class="card" style="cursor:pointer" onclick="goTo('s-days')"><div class="card-title">📅 <span class="da">Min rejse dag for dag</span><span class="es hidden">Mi viaje día a día</span></div><div class="prose da"><p>18 dage – hotel, mapa, etapebeskrivelse, byinfo og Oporto-guide på ét sted.</p></div><div class="prose es hidden"><p>18 días – hotel, mapa, etapa, info de ciudad y guía de Oporto en un solo lugar.</p></div></div>
-<div class="card" style="cursor:pointer" onclick="goTo('s-info')"><div class="card-title">🚨 <span class="da">Vigtig info</span><span class="es hidden">Info importante</span></div><div class="prose da"><p>Nødtelefon, sygdom og bagagetransport.</p></div><div class="prose es hidden"><p>Emergencias, enfermedad y equipaje.</p></div></div>
-<div class="card" style="cursor:pointer" onclick="goTo('s-camino')"><div class="card-title">🐚 <span class="da">Om Caminoen</span><span class="es hidden">Sobre el Camino</span></div><div class="prose da"><p>Symboler, pilgrimspas, pakkeliste og regioner.</p></div><div class="prose es hidden"><p>Símbolos, credencial, equipaje y regiones.</p></div></div>
-<div class="card" style="cursor:pointer" onclick="goTo('s-days','d8j')"><div class="card-title">🍷 Oporto</div><div class="prose da"><p>Seværdigheder, restauranter og portvin – find det under <em>Min rejse dag for dag</em>.</p></div><div class="prose es hidden"><p>Monumentos, restaurantes y vino de Oporto – encuéntralo en <em>Mi viaje día a día</em>.</p></div></div>
+<div class="card guide-card" data-goto=''s-days'' style="cursor:pointer"><div class="card-title">📅 <span class="da">Min rejse dag for dag</span><span class="es hidden">Mi viaje día a día</span></div><div class="prose da"><p>18 dage – hotel, mapa, etapebeskrivelse, byinfo og Oporto-guide på ét sted.</p></div><div class="prose es hidden"><p>18 días – hotel, mapa, etapa, info de ciudad y guía de Oporto en un solo lugar.</p></div></div>
+<div class="card guide-card" data-goto=''s-info'' style="cursor:pointer"><div class="card-title">🚨 <span class="da">Vigtig info</span><span class="es hidden">Info importante</span></div><div class="prose da"><p>Nødtelefon, sygdom og bagagetransport.</p></div><div class="prose es hidden"><p>Emergencias, enfermedad y equipaje.</p></div></div>
+<div class="card guide-card" data-goto=''s-camino'' style="cursor:pointer"><div class="card-title">🐚 <span class="da">Om Caminoen</span><span class="es hidden">Sobre el Camino</span></div><div class="prose da"><p>Symboler, pilgrimspas, pakkeliste og regioner.</p></div><div class="prose es hidden"><p>Símbolos, credencial, equipaje y regiones.</p></div></div>
+<div class="card guide-card" data-goto=''s-days','d8j'' style="cursor:pointer"><div class="card-title">🍷 Oporto</div><div class="prose da"><p>Seværdigheder, restauranter og portvin – find det under <em>Min rejse dag for dag</em>.</p></div><div class="prose es hidden"><p>Monumentos, restaurantes y vino de Oporto – encuéntralo en <em>Mi viaje día a día</em>.</p></div></div>
 </div>
 <div class="card"><div class="card-title">📱 <span class="da">Anbefalede apps</span><span class="es hidden">Apps recomendadas</span></div>
 <div class="app-grid">
@@ -1510,5 +1541,32 @@ function showSub(id,btn){
     },150);
   }
 }</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var guideCards = document.querySelectorAll('#s-guide .card');
+  var goToMap = {
+    'Min rejse': ['s-days', null],
+    'Vigtig info': ['s-info', null],
+    'Om Caminoen': ['s-camino', null],
+    'Oporto': ['s-days', 'd8j']
+  };
+  guideCards.forEach(function(card) {
+    var title = card.querySelector('.card-title');
+    if (!title) return;
+    var text = title.textContent.trim();
+    var found = null;
+    Object.keys(goToMap).forEach(function(key) {
+      if (text.indexOf(key) > -1) found = goToMap[key];
+    });
+    if (found) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', function() {
+        goTo(found[0], found[1]);
+      });
+    }
+  });
+});
+</script>
 </body>
 </html>
