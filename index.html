@@ -100,10 +100,10 @@ button{touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:
 <div class="prose da"><p>6 faner øverst. Hvert vandredag har 3 sub-faner: <strong>Info</strong> (hotel + Google Maps), <strong>Mapa</strong> (rute + højdeprofil) og <strong>By & etape</strong> (cómo llegar + byinfo). Skift sprog med knappen øverst til højre.</p></div>
 <div class="prose es hidden"><p>6 pestañas arriba. Cada día de marcha tiene 3 sub-pestañas: <strong>Info</strong> (hotel + Google Maps), <strong>Mapa</strong> (ruta + perfil) y <strong>By & etape</strong> (cómo llegar + info ciudad). Cambia idioma con el botón de arriba.</p></div></div>
 <div class="two-col">
-<div class="card"><div class="card-title">📅 <span class="da">Min rejse dag for dag</span><span class="es hidden">Mi viaje día a día</span></div><div class="prose da"><p>18 dage – hotel, mapa, etapebeskrivelse, byinfo og Oporto-guide på ét sted.</p></div><div class="prose es hidden"><p>18 días – hotel, mapa, etapa, info de ciudad y guía de Oporto en un solo lugar.</p></div></div>
-<div class="card"><div class="card-title">🚨 <span class="da">Vigtig info</span><span class="es hidden">Info importante</span></div><div class="prose da"><p>Nødtelefon, sygdom og bagagetransport.</p></div><div class="prose es hidden"><p>Emergencias, enfermedad y equipaje.</p></div></div>
-<div class="card"><div class="card-title">🐚 <span class="da">Om Caminoen</span><span class="es hidden">Sobre el Camino</span></div><div class="prose da"><p>Symboler, pilgrimspas, pakkeliste og regioner.</p></div><div class="prose es hidden"><p>Símbolos, credencial, equipaje y regiones.</p></div></div>
-<div class="card"><div class="card-title">🍷 Oporto</div><div class="prose da"><p>Seværdigheder, restauranter og portvin – find det under <em>Min rejse dag for dag</em>.</p></div><div class="prose es hidden"><p>Monumentos, restaurantes y vino de Oporto – encuéntralo en <em>Mi viaje día a día</em>.</p></div></div>
+<div class="card" style="cursor:pointer" onclick="goTo('s-days')"><div class="card-title">📅 <span class="da">Min rejse dag for dag</span><span class="es hidden">Mi viaje día a día</span></div><div class="prose da"><p>18 dage – hotel, mapa, etapebeskrivelse, byinfo og Oporto-guide på ét sted.</p></div><div class="prose es hidden"><p>18 días – hotel, mapa, etapa, info de ciudad y guía de Oporto en un solo lugar.</p></div></div>
+<div class="card" style="cursor:pointer" onclick="goTo('s-info')"><div class="card-title">🚨 <span class="da">Vigtig info</span><span class="es hidden">Info importante</span></div><div class="prose da"><p>Nødtelefon, sygdom og bagagetransport.</p></div><div class="prose es hidden"><p>Emergencias, enfermedad y equipaje.</p></div></div>
+<div class="card" style="cursor:pointer" onclick="goTo('s-camino')"><div class="card-title">🐚 <span class="da">Om Caminoen</span><span class="es hidden">Sobre el Camino</span></div><div class="prose da"><p>Symboler, pilgrimspas, pakkeliste og regioner.</p></div><div class="prose es hidden"><p>Símbolos, credencial, equipaje y regiones.</p></div></div>
+<div class="card" style="cursor:pointer" onclick="goTo('s-days','d8j')"><div class="card-title">🍷 Oporto</div><div class="prose da"><p>Seværdigheder, restauranter og portvin – find det under <em>Min rejse dag for dag</em>.</p></div><div class="prose es hidden"><p>Monumentos, restaurantes y vino de Oporto – encuéntralo en <em>Mi viaje día a día</em>.</p></div></div>
 </div>
 <div class="card"><div class="card-title">📱 <span class="da">Anbefalede apps</span><span class="es hidden">Apps recomendadas</span></div>
 <div class="app-grid">
@@ -1448,6 +1448,18 @@ function toggleLang(){
   document.querySelectorAll('.da').forEach(function(e){e.classList.toggle('hidden',L!=='da')});
   document.querySelectorAll('.es').forEach(function(e){e.classList.toggle('hidden',L!=='es')});
   document.getElementById('lang-toggle-btn').textContent=L==='da'?'🇪🇸 Español':'🇩🇰 Dansk';
+}
+function goTo(sectionId, dayId, subId) {
+  var navBtn = document.querySelector('.nav-tab[onclick*="' + sectionId + '"]');
+  showSection(sectionId, navBtn || document.createElement('button'));
+  if (dayId) {
+    var dayBtn = document.querySelector('.day-btn[onclick*="' + dayId + '"]');
+    showDay(dayId, dayBtn || document.createElement('button'));
+  }
+  if (subId) {
+    setTimeout(function() { showSub(subId, document.querySelector('.sub-tab[onclick*="' + subId + '"]') || document.createElement('button')); }, 50);
+  }
+  window.scrollTo(0, 0);
 }
 function showSection(id,btn){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
