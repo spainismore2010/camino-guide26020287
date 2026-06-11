@@ -1449,15 +1449,20 @@ function toggleLang(){
   document.querySelectorAll('.es').forEach(function(e){e.classList.toggle('hidden',L!=='es')});
   document.getElementById('lang-toggle-btn').textContent=L==='da'?'🇪🇸 Español':'🇩🇰 Dansk';
 }
-function goTo(sectionId, dayId, subId) {
-  var navBtn = document.querySelector('.nav-tab[onclick*="' + sectionId + '"]');
-  showSection(sectionId, navBtn || document.createElement('button'));
+function goTo(sectionId, dayId) {
+  // Find and click the correct nav tab
+  var navBtns = document.querySelectorAll('.nav-tab');
+  var navBtn = document.createElement('button');
+  navBtns.forEach(function(b) { if(b.getAttribute('onclick') && b.getAttribute('onclick').indexOf(sectionId) > -1) navBtn = b; });
+  showSection(sectionId, navBtn);
+  // If a day is specified, activate it too
   if (dayId) {
-    var dayBtn = document.querySelector('.day-btn[onclick*="' + dayId + '"]');
-    showDay(dayId, dayBtn || document.createElement('button'));
-  }
-  if (subId) {
-    setTimeout(function() { showSub(subId, document.querySelector('.sub-tab[onclick*="' + subId + '"]') || document.createElement('button')); }, 50);
+    setTimeout(function() {
+      var dayBtns = document.querySelectorAll('.day-btn');
+      var dayBtn = document.createElement('button');
+      dayBtns.forEach(function(b) { if(b.getAttribute('onclick') && b.getAttribute('onclick').indexOf(dayId) > -1) dayBtn = b; });
+      showDay(dayId, dayBtn);
+    }, 50);
   }
   window.scrollTo(0, 0);
 }
